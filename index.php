@@ -1,6 +1,11 @@
 <?php
     include "config.php";
-    $result = mysqli_query($conn, 'select * from karyawan');
+    $result = mysqli_query($conn, 
+    '
+        select k.id, k.name, k.address , p.name_prov, c.name_city from karyawan k 
+        join province p on k.prov = p.id 
+        join city c on c.id = k.city
+    ');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,8 +42,8 @@
                             <th><?php echo $i;?></th>
                             <th><?php echo $row['name'];?></th>
                             <th><?php echo $row['address'];?></th>
-                            <th><?php echo $row['prov'];?></th>
-                            <th><?php echo $row['city'];?></th>
+                            <th><?php echo $row['name_prov'];?></th>
+                            <th><?php echo $row['name_city'];?></th>
                             <th>
                                 <a href=<?php echo "update.php?id=$row[id]";?>>Update</a> |
                                 <a href=<?php echo "delete.php?id=$row[id]";?>>Delete</a>

@@ -1,5 +1,7 @@
 <?php
     include "config.php";
+    $prov = mysqli_query($conn, 'select * from province');
+    $city = mysqli_query($conn, 'select * from city');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,11 +29,23 @@
                         </tr>
                         <tr>
                             <td>Province : </td>
-                            <td><input type="text" name="prov"></td>
+                            <td>
+                                <select name="prov" id="prov">
+                                    <option>-=Select Province=-</option>
+                                    <?php foreach($prov as $p){ ?>
+                                    <option value=<?php echo $p['id']; ?>><?php echo $p['name_prov']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td>City : </td>
-                            <td><input type="text" name="city"></td>
+                            <td>
+                                <select name="city" id="city">
+                                    <option>-=Select City=-</option>
+                                    <option></option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -42,10 +56,37 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $('#prov').change(function(){
+                var province_id = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    url: 'city.php',
+                    data: 'prov_id='+province_id,
+                    dataType: 'json',
+                    success:function(response){
+                        var len = response.length;
 
+                        $("#city").empty();
+                        $("#city").append("<option>-=Select City=-</option>");
+                        for( var i = 0; i<len; i++){
+                            var id = response[i]['id'];
+                            var name = response[i]['name_city'];
+                            
+                            $("#city").append(
+                                "<option value='"+id+"'>"+name+"</option>"
+                            );
+
+                        }
+                    }
+                })
+            })
+        })
+    </script>
     <?php
         if(isset($_POST['submit'])){
             include "config.php";
