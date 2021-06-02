@@ -1,7 +1,6 @@
 <?php
     include "config.php";
     $prov = mysqli_query($conn, 'select * from province');
-    $city = mysqli_query($conn, 'select * from city');
 ?>
 <!DOCTYPE html>
 <html lang="en">
